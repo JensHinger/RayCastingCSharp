@@ -1,2 +1,4 @@
 # RayCastingCSharp
-Raycasting implemented in C# with windows forms.
+
+Following a Desmos link with i've used to understand the math behind the algorithm better.
+https://www.desmos.com/calculator/bdqkcfsuko?lang=de
