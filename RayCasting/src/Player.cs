@@ -26,8 +26,8 @@ namespace TestApp.src
 
         public (double, int) CheckCollision(ref Map map, double dirX, double dirY)
         {
-            int iteratorX = 1;
-            int iteratorY = 1;
+            int iteratorX = 0;
+            int iteratorY = 0;
 
             bool borderFoundY = false;
             bool borderFoundX = false;
@@ -39,8 +39,26 @@ namespace TestApp.src
             while (!(borderFoundX & borderFoundY))
             {
                 // Length of vectors when delta_x = 1 or delta_y = 1
-                double s_x = iteratorX * Math.Sqrt(1 + (dirY / dirX) * (dirY / dirX));
-                double s_y = iteratorY * Math.Sqrt(1 + (dirX / dirY) * (dirX / dirY));
+                double deltaDistX = Math.Sqrt(1 + (dirY / dirX) * (dirY / dirX));
+                double deltaDistY = Math.Sqrt(1 + (dirX / dirY) * (dirX / dirY));
+
+                double xBorderDist = dirY switch
+                {
+                    <= 0 => Y - Math.Truncate(Y),
+                    > 0 => 1 - (Y - Math.Truncate(Y)),
+                    _ => throw new Exception("Something went wrong!")
+                }; 
+
+                double yBorderDist = dirX switch
+                {
+                    <= 0 => X - Math.Truncate(X),
+                    > 0 => 1 - (X - Math.Truncate(X)),
+                    _ => throw new Exception("Something went wrong!")
+                };
+
+
+                double s_x = iteratorX * deltaDistX + xBorderDist * deltaDistX;
+                double s_y = iteratorY * deltaDistY + yBorderDist * deltaDistY;
 
                 if (borderFoundY && s_x > s_y) { break; }
                 else if (borderFoundX && s_y > s_x) { break; }
@@ -54,7 +72,6 @@ namespace TestApp.src
                     if (dirX < 0) {  intersect_y_y = (int)Math.Ceiling(this.Y + dirX * s_y); }
                     else { intersect_y_y = (int)Math.Floor(this.Y + dirX * s_y); }
                     
-
                     bool fieldState = map.GetFieldState(intersect_y_x, intersect_y_y);
 
                     if (fieldState)

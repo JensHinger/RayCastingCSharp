@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayCasting", "TestApp\RayCasting.csproj", "{48FBCD31-86DF-4550-93F9-C6E3EF221FF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayCasting", "RayCasting\RayCasting.csproj", "{4963C45D-08D0-4C12-98A2-9457D44F253E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{48FBCD31-86DF-4550-93F9-C6E3EF221FF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48FBCD31-86DF-4550-93F9-C6E3EF221FF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48FBCD31-86DF-4550-93F9-C6E3EF221FF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48FBCD31-86DF-4550-93F9-C6E3EF221FF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4963C45D-08D0-4C12-98A2-9457D44F253E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4963C45D-08D0-4C12-98A2-9457D44F253E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4963C45D-08D0-4C12-98A2-9457D44F253E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4963C45D-08D0-4C12-98A2-9457D44F253E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {43CDE5DA-C246-40D9-B411-E3480884C6CA}
+		SolutionGuid = {0CFC2592-D713-40B7-9174-62196134C33C}
 	EndGlobalSection
 EndGlobal

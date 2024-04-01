@@ -14,7 +14,7 @@ namespace TestApp
         {
             InitializeComponent();
 
-            p1 = new Player(7, 2, 0, -1);
+            p1 = new Player(2.4, 6.5, 1, 1);
             map = new Map();
 
             (test, col) = p1.CalculateRays(ref map, 60);
