@@ -28,13 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            KeyPreview = true;
+
             button1 = new Button();
             panel1 = new Panel();
+            KeyDown += Form1_KeyDown;
             SuspendLayout();
             // 
             // button1
             // 
-            button1.Location = new Point(474, 623);
+            button1.Location = new Point(12, 637);
             button1.Name = "button1";
             button1.Size = new Size(135, 32);
             button1.TabIndex = 1;
