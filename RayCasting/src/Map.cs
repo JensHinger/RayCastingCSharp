@@ -23,9 +23,9 @@ namespace TestApp.src
                 GameField[i, 9] = true;
             }
 
-            GameField[4, 4] = true;
-            GameField[4, 5] = true;
-            GameField[4, 6] = true;
+            //GameField[4, 4] = true;
+            //GameField[4, 5] = true;
+            //GameField[4, 6] = true;
 
             for (int i = 0;i < GameField.GetLength(0); i++)
             {

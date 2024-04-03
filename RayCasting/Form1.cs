@@ -16,12 +16,9 @@ namespace TestApp
         {
             InitializeComponent();
 
-            p1 = new Player(2.4, 6.5, 0.5, 1);
+            p1 = new Player(6.5, 6.5, -.5, -.2);
             map = new Map();
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
+            
             g = this.CreateGraphics();
             pG = panel1.CreateGraphics();
         }
@@ -35,17 +32,23 @@ namespace TestApp
         {
             if (e.KeyCode == Keys.W || e.KeyCode == Keys.Up)
             {
-                p1.Move();
+                // Move in "look" direction
+                p1.Move(forward: true);
+            }
+            else if (e.KeyCode == Keys.S || e.KeyCode == Keys.Down)
+            {
+                // Move away from "look" direction
+                p1.Move(forward: false);
             }
             else if (e.KeyCode == Keys.A || e.KeyCode == Keys.Left)
             {
                 // Rotate charakter left
-                p1.RotateLeft();
+                p1.Rotate(right: false);
             }
             else if (e.KeyCode == Keys.D || e.KeyCode == Keys.Right)
             {
                 // Rotate charakter right
-                p1.RotateRight();
+                p1.Rotate(right: true);
             }
 
             UpdateView();
@@ -91,7 +94,7 @@ namespace TestApp
             pG.DrawEllipse(pen, playerPosX - 2, playerPosY - 2, 4, 4);
 
             // draw 3 "look" rays
-            pG.DrawLine(pen, playerPosX, playerPosY, (int)(playerPosX + p1.DirX * 20), (int)(playerPosY + p1.DirY * 20));
+            pG.DrawLine(pen, playerPosX, playerPosY, (int)(playerPosX + (p1.DirX * 20)), (int)(playerPosY + (p1.DirY * 20)));
         }
 
         private void DrawView()

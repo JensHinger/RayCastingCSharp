@@ -17,17 +17,22 @@ namespace TestApp.src
         public double DirX { get; set; }
         public double DirY { get; set; }
         public double RayLen { get; set; }
+        public double Rotation { get; set; }
 
         public Player(double x, double y, double dirX, double dirY)
         {
             X = x;
-            Y = y;
-            DirX = dirX;
-            DirY = dirY;
-            RayLen = Math.Sqrt(DirX * DirX + DirY * DirY);
+            Y = y; 
+            RayLen = Math.Sqrt(dirX * dirX + dirY * dirY);
+
+            // Normalize dir Vectors
+            DirX = dirX / RayLen;
+            DirY = dirY / RayLen;
+
+            Rotation = 0;
         }
 
-        public (double, int) CheckCollision(ref Map map, double dirX, double dirY)
+        public (double, int) CheckCollision(ref Map map, double rayDirX, double rayDirY)
         {
             int iteratorX = 0;
             int iteratorY = 0;
@@ -38,17 +43,17 @@ namespace TestApp.src
             double borderDistX = double.MaxValue;
 
             // Depending if dir vector negativ calculate position "in" cell
-            double xBorderDist = dirY switch
+            double xBorderDist = rayDirY switch
             {
-                < 0 => Y - Math.Truncate(Y),
-                >= 0 => 1 - (Y - Math.Truncate(Y)),
+                <= 0 => Y - Math.Truncate(Y),
+                > 0 => 1 - (Y - Math.Truncate(Y)),
                 _ => throw new Exception("Something went wrong!")
             };
 
-            double yBorderDist = dirX switch
+            double yBorderDist = rayDirX switch
             {
-                < 0 => X - Math.Truncate(X),
-                >= 0 => 1 - (X - Math.Truncate(X)),
+                <= 0 => X - Math.Truncate(X),
+                > 0 => 1 - (X - Math.Truncate(X)),
                 _ => throw new Exception("Something went wrong!")
             };
 
@@ -56,8 +61,8 @@ namespace TestApp.src
             while (!(borderFoundX & borderFoundY))
             {
                 // Length of vectors when delta_x = 1 or delta_y = 1
-                double deltaDistX = Math.Sqrt(1 + (dirY / dirX) * (dirY / dirX));
-                double deltaDistY = Math.Sqrt(1 + (dirX / dirY) * (dirX / dirY));
+                double deltaDistX = Math.Sqrt(1 + (rayDirY / rayDirX) * (rayDirY / rayDirX));
+                double deltaDistY = Math.Sqrt(1 + (rayDirX / rayDirY) * (rayDirX / rayDirY));
 
                 double s_x = iteratorX * deltaDistX + xBorderDist * deltaDistX;
                 double s_y = iteratorY * deltaDistY + yBorderDist * deltaDistY;
@@ -67,16 +72,18 @@ namespace TestApp.src
 
                 if (borderFoundY && s_x > s_y) { break; }
                 else if (borderFoundX && s_y > s_x) { break; }
+                // TODO when vectors are exact same how to know which wall color to choose?
+                else if ((borderFoundX || borderFoundY) && double.Equals(rayDirX, rayDirY)) { Console.WriteLine(rayDirX + " EQUALS " + rayDirY); break; }
                 // If dirX = 0, then deltaDistX = double.Infinity
                 else if (s_y < s_x || double.IsInfinity(deltaDistX))
                 {
                     iteratorY++;
-
-                    int intersect_y_x = (int)Math.Round(this.X + dirY * s_y);
+                    
+                    int intersect_y_x = (int)Math.Round(this.X + rayDirY * s_y);
                     int intersect_y_y;
 
-                    if (dirX < 0) {  intersect_y_y = (int)Math.Ceiling(this.Y + dirX * s_y); }
-                    else { intersect_y_y = (int)Math.Floor(this.Y + dirX * s_y); }
+                    if (rayDirX < 0) {  intersect_y_y = (int)Math.Ceiling(this.Y + rayDirX * s_y); }
+                    else { intersect_y_y = (int)Math.Floor(this.Y + rayDirX * s_y); }
                     
                     bool fieldState = map.GetFieldState(intersect_y_x, intersect_y_y);
 
@@ -90,12 +97,13 @@ namespace TestApp.src
                 else if (s_x <= s_y || double.IsInfinity(deltaDistY))
                 {
                     iteratorX++;
+                    //Console.WriteLine("x_y " + (this.Y + dirX * s_x));
 
                     int intersect_x_x;
-                    int intersect_x_y = (int)Math.Round(this.Y + dirX * s_x); 
+                    int intersect_x_y = (int)Math.Round(this.Y + rayDirX * s_x); 
 
-                    if (dirY < 0) { intersect_x_x = (int)Math.Ceiling(this.X + dirY * s_x); }
-                    else { intersect_x_x = (int)Math.Floor(this.X + dirY * s_x); }
+                    if (rayDirY < 0) { intersect_x_x = (int)Math.Ceiling(this.X + rayDirY * s_x); }
+                    else { intersect_x_x = (int)Math.Floor(this.X + rayDirY * s_x); }
 
                     bool fieldState = map.GetFieldState(intersect_x_x, intersect_x_y);
 
@@ -127,10 +135,6 @@ namespace TestApp.src
                 double rayDirX = this.DirX * Math.Cos(rayAngle) - this.DirY * Math.Sin(rayAngle);
                 double rayDirY = this.DirX * Math.Sin(rayAngle) + this.DirY * Math.Cos(rayAngle);
 
-                // Normalize dir vectors
-                rayDirX /= RayLen;
-                rayDirY /= RayLen;
-
                 int color;
                 double collDist;
 
@@ -142,32 +146,33 @@ namespace TestApp.src
             return (distArr, colArr);
         }
 
-        public void Move()
+        public void Move(bool forward = true)
         {
-            Console.WriteLine(X + " " + Y);
-
-            X += DirX / RayLen;
-            Y += DirY / RayLen;
-
-            Console.WriteLine(X + " " + Y);
+            if (forward)
+            {
+                X += DirX;
+                Y += DirY;
+            } else
+            {
+                X -= DirX;
+                Y -= DirY;
+            }
+            
         }
 
-        public void RotateLeft() 
+        public void Rotate(bool right = true) 
         {
-            double rotation = - 5 * (Math.PI / 180);
+            double rotation;
+
+            if (right) { rotation = 5 * (Math.PI / 180); }
+            else { rotation =  -5 * (Math.PI / 180); }
 
             // TODO change to "smooth" rotation
-            DirX = this.DirX * Math.Cos(rotation) - this.DirY * Math.Sin(rotation);
-            DirY = this.DirX * Math.Sin(rotation) + this.DirY * Math.Cos(rotation);
-        }
+            double tempDirX = this.DirX * Math.Cos(rotation) - this.DirY * Math.Sin(rotation);
+            double tempDirY = this.DirX * Math.Sin(rotation) + this.DirY * Math.Cos(rotation);
 
-        public void RotateRight() 
-        {
-            double rotation = 5 * (Math.PI / 180);
-
-            // TODO change to "smooth" rotation
-            DirX = this.DirX * Math.Cos(rotation) - this.DirY * Math.Sin(rotation);
-            DirY= this.DirX * Math.Sin(rotation) + this.DirY * Math.Cos(rotation);
+            DirX = tempDirX;
+            DirY = tempDirY;
         }
     }
 }
