@@ -16,7 +16,8 @@ namespace TestApp
         {
             InitializeComponent();
 
-            p1 = new Player(6.5, 6.5, -.5, -.2);
+            //p1 = new Player(6, 6, 1, 0);
+            p1 = new Player(5.754540397359849, 5.833449191110242, -0.93143534710751841, 0.0995057873530461);
             map = new Map();
             
             g = this.CreateGraphics();
@@ -30,33 +31,39 @@ namespace TestApp
 
         private void Form1_KeyDown(Object sender, KeyEventArgs e)
         {
+            bool didChange = false;
+
             if (e.KeyCode == Keys.W || e.KeyCode == Keys.Up)
             {
                 // Move in "look" direction
                 p1.Move(forward: true);
+                didChange = true;
             }
             else if (e.KeyCode == Keys.S || e.KeyCode == Keys.Down)
             {
                 // Move away from "look" direction
                 p1.Move(forward: false);
+                didChange = true;
             }
             else if (e.KeyCode == Keys.A || e.KeyCode == Keys.Left)
             {
                 // Rotate charakter left
                 p1.Rotate(right: false);
+                didChange = true;
             }
             else if (e.KeyCode == Keys.D || e.KeyCode == Keys.Right)
             {
                 // Rotate charakter right
                 p1.Rotate(right: true);
+                didChange = true;
             }
 
-            UpdateView();
+            if (didChange) { UpdateView(); }
         }
 
         private void UpdateView()
         {
-            (test, col) = p1.CalculateRays(ref map, 60);
+            (test, col) = p1.CalculateRays(ref map, 90);
 
             ClearView();
             DrawMap();
@@ -82,7 +89,7 @@ namespace TestApp
                 {
                     if (map.GameField[i, j])
                     {
-                        pG.DrawRectangle(pen, blockSize * i, blockSize * j, blockSize, blockSize);
+                        pG.DrawRectangle(pen, blockSize * j, blockSize * i, blockSize, blockSize);
                     }
                 }
             }
