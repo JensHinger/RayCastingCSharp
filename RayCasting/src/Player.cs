@@ -60,14 +60,14 @@ namespace TestApp.src
 
             // TODO seems to stop working when one of the rays is negative?
             // Length of vectors when delta_x = 1 or delta_y = 1
-            double deltaDistX = Math.Sqrt(1 + (rayDirY / rayDirX) * (rayDirY / rayDirX));
-            double deltaDistY = Math.Sqrt(1 + (rayDirX / rayDirY) * (rayDirX / rayDirY));
+            double deltaDistY = Math.Sqrt(1 + (rayDirY / rayDirX) * (rayDirY / rayDirX));
+            double deltaDistX = Math.Sqrt(1 + (rayDirX / rayDirY) * (rayDirX / rayDirY));
 
             // Differentiate between positive dir vectors -> use ceiling / floor 
             while (!(borderFoundX & borderFoundY))
             {
-                double s_x = iteratorX * deltaDistX + yBorderDist * deltaDistX;
-                double s_y = iteratorY * deltaDistY + xBorderDist * deltaDistY;
+                double s_y = iteratorY * deltaDistY + yBorderDist * deltaDistY;
+                double s_x = iteratorX * deltaDistX + xBorderDist * deltaDistX;
 
                 if (double.IsNaN(s_x)) { s_x = double.MaxValue; }
                 if (double.IsNaN(s_y)) { s_y = double.MaxValue; }
@@ -77,17 +77,18 @@ namespace TestApp.src
                 // TODO when vectors are exact same how to know which wall color to choose?
                 else if ((borderFoundX || borderFoundY) && double.Equals(rayDirX, rayDirY)) { Console.WriteLine(rayDirX + " EQUALS " + rayDirY); break; }
                 // If dirX = 0, then deltaDistX = double.Infinity
-                else if (s_y < s_x || double.IsInfinity(deltaDistX))
+                else if (s_y < s_x)
                 {
                     iteratorY++;
                     //Console.WriteLine(rayDirY + " " + xBorderDist);
-                    //Console.WriteLine("y_x " + (this.X + (rayDirY * s_y)));
+                    //Console.WriteLine("y_x " + (this.X + rayDirY * s_y));
+                    //Console.WriteLine("y_y " + (this.Y + rayDirX * s_y));
 
-                    int intersect_y_x = (int)Math.Round(this.X + rayDirY * s_y);
-                    int intersect_y_y;
+                    int intersect_y_y = (int)Math.Round(this.Y + rayDirX * s_y);
+                    int intersect_y_x;
 
-                    if (rayDirX < 0) {  intersect_y_y = (int)Math.Ceiling(this.Y + rayDirX * s_y); }
-                    else { intersect_y_y = (int)Math.Floor(this.Y + rayDirX * s_y); }
+                    if (rayDirY < 0) {  intersect_y_x = (int)Math.Ceiling(this.X + rayDirY * s_y); }
+                    else { intersect_y_x = (int)Math.Floor(this.X + rayDirY * s_y); }
                     
                     bool fieldState = map.GetFieldState(intersect_y_x, intersect_y_y);
 
@@ -98,16 +99,16 @@ namespace TestApp.src
                     }
                 }
                 // If dirY = 0, then deltaDistY = double.Infinity
-                else if (s_x <= s_y || double.IsInfinity(deltaDistY))
+                else if (s_x <= s_y)
                 {
                     iteratorX++;
                     //Console.WriteLine("x_y " + (this.Y + rayDirX * s_x));
 
-                    int intersect_x_x;
-                    int intersect_x_y = (int)Math.Round(this.Y + rayDirX * s_x); 
+                    int intersect_x_y;
+                    int intersect_x_x = (int)Math.Round(this.X + rayDirY * s_x); 
 
-                    if (rayDirY < 0) { intersect_x_x = (int)Math.Ceiling(this.X + rayDirY * s_x); }
-                    else { intersect_x_x = (int)Math.Floor(this.X + rayDirY * s_x); }
+                    if (rayDirX < 0) { intersect_x_y = (int)Math.Ceiling(this.Y + rayDirX * s_x); }
+                    else { intersect_x_y = (int)Math.Floor(this.Y + rayDirX * s_x); }
 
                     bool fieldState = map.GetFieldState(intersect_x_x, intersect_x_y);
 
@@ -144,6 +145,7 @@ namespace TestApp.src
 
                 (collDist, color) = CheckCollision(ref map, rayDirX, rayDirY);
                 distArr[i] = collDist;
+                //distArr[i] = collDist * Math.Cos(rayAngle);
                 colArr[i] = color;
             }
 
