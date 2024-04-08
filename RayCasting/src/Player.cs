@@ -44,14 +44,14 @@ namespace TestApp.src
 
             // Depending if dir vector negativ calculate position "in" cell
             // Think about this
-            double yBorderDist = rayDirX switch
+            double yBorderDist = rayDirY switch
             {
                 <= 0 => Y - Math.Truncate(Y),
                 > 0 => 1 - (Y - Math.Truncate(Y)),
                 _ => throw new Exception("Something went wrong!")
             };
             
-            double xBorderDist = rayDirY switch
+            double xBorderDist = rayDirX switch
             {
                 <= 0 => X - Math.Truncate(X),
                 > 0 => 1 - (X - Math.Truncate(X)),
@@ -60,8 +60,8 @@ namespace TestApp.src
 
             // TODO seems to stop working when one of the rays is negative?
             // Length of vectors when delta_x = 1 or delta_y = 1
-            double deltaDistY = Math.Sqrt(1 + (rayDirY / rayDirX) * (rayDirY / rayDirX));
-            double deltaDistX = Math.Sqrt(1 + (rayDirX / rayDirY) * (rayDirX / rayDirY));
+            double deltaDistY = Math.Sqrt(1 + (rayDirX / rayDirY) * (rayDirX / rayDirY));
+            double deltaDistX = Math.Sqrt(1 + (rayDirY / rayDirX) * (rayDirY / rayDirX));
 
             // Differentiate between positive dir vectors -> use ceiling / floor 
             while (!(borderFoundX & borderFoundY))
@@ -81,14 +81,14 @@ namespace TestApp.src
                 {
                     iteratorY++;
                     //Console.WriteLine(rayDirY + " " + xBorderDist);
-                    //Console.WriteLine("y_x " + (this.X + rayDirY * s_y));
-                    //Console.WriteLine("y_y " + (this.Y + rayDirX * s_y));
+                    //Console.WriteLine("y_x " + (this.X + rayDirX * s_y));
+                    //Console.WriteLine("y_y " + (this.Y + rayDirY * s_y));
 
-                    int intersect_y_y = (int)Math.Round(this.Y + rayDirX * s_y);
+                    int intersect_y_y = (int)Math.Round(this.Y + rayDirY * s_y);
                     int intersect_y_x;
 
-                    if (rayDirY < 0) {  intersect_y_x = (int)Math.Ceiling(this.X + rayDirY * s_y); }
-                    else { intersect_y_x = (int)Math.Floor(this.X + rayDirY * s_y); }
+                    if (rayDirX < 0) {  intersect_y_x = (int)Math.Ceiling(this.X + rayDirX * s_y); }
+                    else { intersect_y_x = (int)Math.Floor(this.X + rayDirX * s_y); }
                     
                     bool fieldState = map.GetFieldState(intersect_y_x, intersect_y_y);
 
@@ -103,12 +103,13 @@ namespace TestApp.src
                 {
                     iteratorX++;
                     //Console.WriteLine("x_y " + (this.Y + rayDirX * s_x));
+                    //Console.WriteLine("x_x " + (this.X + rayDirX * s_x));
 
                     int intersect_x_y;
-                    int intersect_x_x = (int)Math.Round(this.X + rayDirY * s_x); 
+                    int intersect_x_x = (int)Math.Round(this.X + rayDirX * s_x); 
 
-                    if (rayDirX < 0) { intersect_x_y = (int)Math.Ceiling(this.Y + rayDirX * s_x); }
-                    else { intersect_x_y = (int)Math.Floor(this.Y + rayDirX * s_x); }
+                    if (rayDirY < 0) { intersect_x_y = (int)Math.Ceiling(this.Y + rayDirY * s_x); }
+                    else { intersect_x_y = (int)Math.Floor(this.Y + rayDirY * s_x); }
 
                     bool fieldState = map.GetFieldState(intersect_x_x, intersect_x_y);
 
@@ -144,8 +145,8 @@ namespace TestApp.src
                 double collDist;
 
                 (collDist, color) = CheckCollision(ref map, rayDirX, rayDirY);
-                distArr[i] = collDist;
-                //distArr[i] = collDist * Math.Cos(rayAngle);
+                //distArr[i] = collDist;
+                distArr[i] = collDist * Math.Cos(rayAngle);
                 colArr[i] = color;
             }
 
@@ -163,7 +164,6 @@ namespace TestApp.src
                 X -= DirX;
                 Y -= DirY;
             }
-            
         }
 
         public void Rotate(bool right = true) 

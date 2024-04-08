@@ -10,7 +10,7 @@ namespace TestApp.src
 {
     internal class Map
     {
-        public bool[,] GameField = new bool[10, 10];
+        public bool[,] GameField = new bool[50, 50];
 
         public Map() 
         {
@@ -19,20 +19,20 @@ namespace TestApp.src
             {
                 GameField[0, i] = true;
                 GameField[i, 0] = true;
-                GameField[9, i] = true;
-                GameField[i, 9] = true;
+                GameField[49, i] = true;
+                GameField[i, 49] = true;
             }
 
-            GameField[1, 4] = true;
-            GameField[1, 5] = true;
-            GameField[1, 6] = true;
+            GameField[3, 4] = true;
+            GameField[3, 5] = true;
+            GameField[3, 6] = true;
 
             for (int i = 0;i < GameField.GetLength(0); i++)
             {
                 Console.WriteLine();
                 for (int j=0; j < GameField.GetLength(1); j++)
                 {
-                    Console.Write("{0}, {1}, {2}", GameField[i, j], i, j);
+                    Console.Write("{0}", GameField[i, j]);
                 }
             }
         }
@@ -45,7 +45,8 @@ namespace TestApp.src
             }
             catch {
                 // Index not found
-                return false; 
+                // Index out of bounds
+                return true; 
             }
         }
 
